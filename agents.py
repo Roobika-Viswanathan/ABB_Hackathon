@@ -4,108 +4,101 @@ from phi.tools.duckduckgo import DuckDuckGo
 from plc_config import PLCConfig
 
 def make_language_agent():
-    """Create language normalization agent."""
+    """Create language normalization agent for ABB PLC."""
     return Agent(
-        name="Language Normalizer",
+        name="ABB Language Normalizer",
         model=Groq(id=PLCConfig.DEFAULT_MODEL),
         instructions=[
-            "Detect the input language. If not English, translate to clear technical English suitable for PLC code generation.",
-            "Return only the English version of the user's requirement.",
-            "Preserve all technical details and specifications."
+            "Identify the input language. If not English, translate requirements into precise technical English, aligning with terminology used in ABB PLC documentation.",
+            "Return only the English version, omitting all translations.",
+            "Preserve technical specifics, variable/data type conventions, and process details."
         ],
         markdown=False,
     )
 
 def make_clarification_agent():
-    """Create requirements clarification agent."""
+    """Create requirements clarification agent for ABB PLC."""
     return Agent(
-        name="PLC Requirements Clarifier",
+        name="ABB PLC Requirements Clarifier",
         model=Groq(id=PLCConfig.DEFAULT_MODEL),
         instructions=[
-            "You are an expert PLC programmer who helps clarify automation requirements.",
-            "Analyze the user's input and determine if you need more information.",
-            "If the input is clear and complete, respond with: CLEAR_INPUT",
-            "Otherwise, ask ONE concise technical clarification question.",
-            "Focus on missing technical specifications, safety requirements, or operational details."
+            "You are an ABB PLC automation expert for AC500/AC800 series.",
+            "If input is complete, respond: CLEAR_INPUT",
+            "Otherwise, ask ONE technical clarification about process specs, signals, or safety.",
+            "If input is unclear, request specific ABB system details needed."
         ],
         markdown=True,
     )
 
+
+
 def make_enhanced_code_agent():
-    """Create IEC 61131-3 code generation agent."""
+    """Generate IEC 61131-3 Structured Text for ABB PLCs."""
     return Agent(
-        name="IEC 61131-3 Code Generator",
+        name="ABB IEC 61131-3 Code Generator",
         model=Groq(id=PLCConfig.DEFAULT_MODEL),
         tools=[DuckDuckGo(search=True)],
         instructions=[
-            "You are an expert in PLC programming following IEC 61131-3 standard.",
-            "Generate clean, well-commented Structured Text code with proper VAR blocks.",
-            "Include proper variable declarations, data types, and safety considerations.",
-            "Use appropriate timers, counters, and logic blocks as needed.",
-            "Return ONLY valid IEC 61131-3 Structured Text code in a fenced code block.",
-            "Include comments explaining the logic and safety features."
+            "Generate ABB AC500/800 Structured Text code per IEC 61131-3 standards.",
+            "Include VAR blocks, ABB naming conventions, safety interlocks.",
+            "Return only ST code in fenced blocks with inline comments."
         ],
         markdown=True,
     )
+
+
 
 def make_enhanced_flow_agent():
-    """Create flowchart generation agent."""
+    """Generate ABB PLC logic flowchart as Mermaid."""
     return Agent(
-        name="IEC 61131-3 Flowchart Generator",
+        name="ABB PLC Flowchart Generator",
         model=Groq(id=PLCConfig.DEFAULT_MODEL),
         instructions=[
-            "Generate a detailed Mermaid flowchart representing the PLC control logic.",
-            "Use proper flowchart symbols (diamond for decisions, rectangle for processes).",
-            "Include all conditions, actions, and safety interlocks.",
-            "Make the flowchart clear and easy to follow.",
-            "Return only valid Mermaid flowchart code in a fenced block."
+            "Generate a clear, symbol-compliant Mermaid flowchart for ABB PLC logic (diamonds for decisions, rectangles for process steps).",
+            "Include all safety, diagnostics, and process interlocks as per ABB best practices.",
+            "Return only valid Mermaid code in a fenced block."
         ],
         markdown=True,
     )
+
 
 def make_hmi_agent():
-    """Create HMI generation agent."""
+    """Create ABB HMI mockup as HTML/CSS."""
     return Agent(
-        name="HMI Generator",
+        name="ABB HMI Generator",
         model=Groq(id=PLCConfig.DEFAULT_MODEL),
         instructions=[
-            "Generate a professional HMI mockup as HTML with inline CSS.",
-            "Include relevant controls, indicators, and displays for the PLC system.",
-            "Use industrial-style colors and layouts.",
-            "Make it functional-looking but as a mockup only.",
-            "Return only clean HTML code in a fenced block."
+            "Produce a clean, functional HMI HTML mockup that matches ABB CP600 or similar HMI styling (industrial colors, simple layouts, typical button/indicator arrangement).",
+            "Only provide a clean HTML/CSS code block, using ABB HMI color palettes and iconography when possible."
         ],
         markdown=True,
     )
+
 
 def make_simulation_agent():
-    """Create simulation agent."""
+    """Test scenario table for ABB PLC code."""
     return Agent(
-        name="PLC Logic Simulator",
+        name="ABB PLC Logic Simulator",
         model=Groq(id=PLCConfig.DEFAULT_MODEL),
         instructions=[
-            "Create comprehensive test scenarios for the provided IEC 61131-3 code.",
-            "Include normal operation, edge cases, and failure modes.",
-            "Present results in a clear markdown table format.",
-            "Cover input conditions, expected outputs, and reasoning."
+            "Generate comprehensive test cases for ABB IEC 61131-3 Structured Text code, including normal running, edge conditions, and ABB-specific safety/fault cases.",
+            "Present input conditions, expected outputs, and engineering logic in a markdown table."
         ],
         markdown=True,
     )
 
+
 def make_validation_agent():
-    """Create code validation agent."""
+    """Validate ABB IEC 61131-3 code for compliance/safety."""
     return Agent(
-        name="IEC 61131-3 Validator",
+        name="ABB IEC 61131-3 Validator",
         model=Groq(id=PLCConfig.DEFAULT_MODEL),
         instructions=[
-            "You are an expert IEC 61131-3 syntax and safety validator.",
-            "Thoroughly analyze the provided Structured Text code for:",
-            "- Syntax correctness and proper block structures",
-            "- Variable declarations and data type consistency", 
-            "- Safety considerations and interlocks",
-            "- Industrial best practices and standards compliance",
-            "Provide a clear verdict and detailed analysis.",
-            "Rate the code quality from 1-10 and suggest specific improvements."
+            "Thoroughly validate Structured Text code for ABB PLCs: syntax, block structure, variable/data type consistency, safety (emergency stop logic, hazard interlocks), and compliance with IEC 61131-3 + ABB standards.",
+            "Provide a pass/fail verdict and detailed analysis with targeted suggestions per ABB best practices.",
+            "Do not provide any score or numerical rating."
         ],
         markdown=True,
     )
+
+
